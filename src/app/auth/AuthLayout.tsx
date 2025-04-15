@@ -22,9 +22,9 @@ const AuthLayout = () => {
               </CardContent>
             </Card>
             <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-              By clicking continue, you agree to our{' '}
-              <a href="#">Terms of Service</a> and{' '}
-              <a href="#">Privacy Policy</a>.
+              En cliquant sur continuer, vous acceptez nos{' '}
+              <a href="#">Conditions d’utilisation</a> et{' '}
+              <a href="#">Politique de confidentialité</a>.
             </div>
           </div>
         </div>

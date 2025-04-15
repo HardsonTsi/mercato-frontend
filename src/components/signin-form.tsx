@@ -67,7 +67,7 @@ export const SigninForm = () => {
                 <div className=" flex flex-col items-center text-center ">
                   <h1 className="text-2xl font-bold">Bienvenue</h1>
                   <p className="text-balance text-muted-foreground">
-                    Connectez-vous à votre compte Acme Inc
+                    Connectez-vous à votre compte Mercato
                   </p>
                 </div>
 

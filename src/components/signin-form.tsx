@@ -15,15 +15,17 @@ import { Button } from '@/components/ui/button.tsx';
 import { LoaderCircle } from 'lucide-react';
 import { useSignInMutation } from '@/app/redux/api/authApi.ts';
 import { useToast } from '@/components/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { setAuth } from '@/app/redux/slices/auth.slice.ts';
 import { useAppDispatch } from '@/app/redux/store.ts';
+import { useNavigateSearch } from '@/app/hooks/useNavigationSearch.tsx';
 
 export const SigninForm = () => {
   const [signIn, { isLoading }] = useSignInMutation();
 
   const { toast } = useToast();
   const navigate = useNavigate();
+  const navigateSearch = useNavigateSearch();
   const dispatch = useAppDispatch();
 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -36,20 +38,26 @@ export const SigninForm = () => {
 
   async function onSubmit(data: z.infer<typeof signInSchema>) {
     console.log(data);
+    let title = '';
     await signIn(data)
       .unwrap()
       .then((data) => {
+        title = `Bienvenue ${data.data.user.firstname} ${data.data.user.lastname}`;
         toast({
           variant: 'destructive',
-          title: `Bienvenue ${data.data.user.firstname} ${data.data.user.lastname}`,
+          title,
         });
         dispatch(setAuth(data.data));
         navigate('/dashboard');
       })
       .catch((err) => {
+        if (err.data.status === 403) {
+          navigateSearch(`/auth/active-account`, { email: data.email });
+          title = 'Veuillez activer votre compte';
+        }
         toast({
           variant: 'destructive',
-          title: err.data.data.message,
+          title: title || err.data.data.message,
         });
       });
   }
@@ -117,6 +125,21 @@ export const SigninForm = () => {
                         </span>
                       )}
                     </Button>
+                  </div>
+                  <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4"></div>
+                  <div className="text-center text-sm">
+                    Vous n'avez pas de compte?{' '}
+                    <Link
+                      to={'/auth/signup'}
+                      className="underline underline-offset-4"
+                    >
+                      Créer un compte
+                    </Link>
                   </div>
                 </div>
               </div>

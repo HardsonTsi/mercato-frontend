@@ -16,8 +16,8 @@ export type UserType = {
   email: string;
   firstname: string;
   lastname: string;
-  createdAt: string
-  updatedAt: string
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type AuthType = {
@@ -26,4 +26,4 @@ export type AuthType = {
   refresh_token: string;
 };
 
-export type ActiveAccountType = z.infer<typeof activeAccountSchema>
+export type ActiveAccountType = z.infer<typeof activeAccountSchema>;

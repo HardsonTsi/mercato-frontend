@@ -7,13 +7,14 @@ import DasboardPage from '@/app/dashboard/page.tsx';
 import { OpenRoute } from './auth/OpenRoute';
 import { PrivateRoute } from '@/app/auth/PrivateRoute.tsx';
 import { ActiveAccountPage } from './auth/ActiveAccount';
+import Home from './pages/Home';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <OpenRoute>
-        <AuthLayout />
+        <Home />
       </OpenRoute>
     ),
   },

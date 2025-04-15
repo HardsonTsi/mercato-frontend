@@ -5,12 +5,17 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp.tsx';
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
-import { useActivateAccountMutation } from '@/app/redux/api/authApi.ts';
+import {
+  useActivateAccountMutation,
+  useSendCodeMutation,
+} from '@/app/redux/api/authApi.ts';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form.tsx';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,19 +28,22 @@ import { useNavigate } from 'react-router-dom';
 import { ActiveAccountType } from '@/app/types/auth.ts';
 import config from '@/config/config.ts';
 import { useToast } from '@/components/hooks/use-toast';
+import { Input } from '@/components/ui/input.tsx';
+import { useSearchParams } from 'react-router-dom';
 
-export const ActiveAccountComponent = ({ email }: { email: string }) => {
+export const ActiveAccountComponent = () => {
   const [activateAccount, { isLoading }] = useActivateAccountMutation();
+  const [sendCode] = useSendCodeMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const { toast } = useToast();
-
 
   const form = useForm<ActiveAccountType>({
     resolver: zodResolver(activeAccountSchema),
     defaultValues: {
-      email: email || 'hardsontessi2@gmail.com',
+      email: searchParams.get('email') || '',
       code: '',
     },
   });
@@ -57,6 +65,23 @@ export const ActiveAccountComponent = ({ email }: { email: string }) => {
       });
   }
 
+  async function onSendCode() {
+    await sendCode({ email: form.getValues('email') })
+      .unwrap()
+      .then(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Code envoyé',
+        });
+      })
+      .catch((e) => {
+        toast({
+          variant: 'destructive',
+          title: e.data.data.message,
+        });
+      });
+  }
+
   return (
     <>
       <p className="text-center font-bold py-1">Activez votre compte</p>
@@ -65,6 +90,21 @@ export const ActiveAccountComponent = ({ email }: { email: string }) => {
           className="flex flex-col gap-4 justify-center pt-2"
           onSubmit={form.handleSubmit(onSubmit)}
         >
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Adresse Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="email" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="code"
@@ -97,9 +137,7 @@ export const ActiveAccountComponent = ({ email }: { email: string }) => {
               </FormItem>
             )}
           />
-          <Button type="submit"
-
-          >
+          <Button type="submit">
             {/**/}
             Activer mon compte
             {isLoading && (
@@ -109,18 +147,19 @@ export const ActiveAccountComponent = ({ email }: { email: string }) => {
             )}
           </Button>
 
-
           <div className="grid grid-cols-3 gap-4"></div>
           <div className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <a href="#"
-               className="underline underline-offset-4">
-              Sign up
-            </a>
+            Vous n'avez pas reçu de code ?{' '}
+            <button
+              disabled={form.getFieldState('email').invalid}
+              onClick={() => onSendCode()}
+              className="underline underline-offset-4 cursor-pointer"
+            >
+              Envoyer le code
+            </button>
           </div>
         </form>
       </Form>
     </>
   );
 };
-

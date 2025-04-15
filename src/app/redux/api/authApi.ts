@@ -25,9 +25,9 @@ export const authApi = createApi({
         body,
       }),
     }),
-    generateOtp: builder.mutation({
+    sendCode: builder.mutation({
       query: (body) => ({
-        url: '/otp',
+        url: '/sendCode',
         method: 'POST',
         body,
       }),
@@ -48,7 +48,7 @@ export const authApi = createApi({
 export const {
   useGetProfileQuery,
   useSignUpMutation,
-  useGenerateOtpMutation,
+  useSendCodeMutation,
   useSignInMutation,
   useActivateAccountMutation,
 } = authApi;

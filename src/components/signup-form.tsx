@@ -16,7 +16,7 @@ import { Button } from './ui/button';
 import { useSignUpMutation } from '@/app/redux/api/authApi.ts';
 
 import { useToast } from '@/components/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function SignupForm() {
   const [signUp, { isLoading }] = useSignUpMutation();
@@ -44,14 +44,15 @@ export function SignupForm() {
           title: 'Compte créé avec succès',
           description: 'Compte créé avec succès',
         });
+        localStorage.setItem('email', data.email);
         navigate('/auth/active-account', { state: { email: data.email } });
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         toast({
           variant: 'destructive',
           title: error.data.data.message,
-          description: error.data.data.message
+          description: error.data.data.message,
         });
       });
   }
@@ -59,8 +60,7 @@ export function SignupForm() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}
-              className="p-6 md:p-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center ">
               <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -146,7 +146,7 @@ export function SignupForm() {
                 type="submit"
                 className="w-full"
               >
-                <span>Login</span>
+                <span>Créer un compte</span>
 
                 {isLoading && (
                   <span className="animate-spin">
@@ -163,11 +163,10 @@ export function SignupForm() {
             </div>
             <div className="grid grid-cols-3 gap-4"></div>
             <div className="text-center text-sm">
-              Don&apos;t have an account?{' '}
-              <a href="#"
-                 className="underline underline-offset-4">
-                Sign up
-              </a>
+              Vous avez déjà un compte ?{' '}
+              <Link to={'/auth'} className="underline underline-offset-4">
+                Se connecter
+              </Link>
             </div>
           </div>
         </form>

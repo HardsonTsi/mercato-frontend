@@ -23,9 +23,8 @@ export const SigninForm = () => {
   const [signIn, { isLoading }] = useSignInMutation();
 
   const { toast } = useToast();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -45,14 +44,12 @@ export const SigninForm = () => {
           title: `Bienvenue ${data.data.user.firstname} ${data.data.user.lastname}`,
         });
         dispatch(setAuth(data.data));
-        navigate("/dashboard")
+        navigate('/dashboard');
       })
       .catch((err) => {
-
-
         toast({
           variant: 'destructive',
-          title: err.data.data.message
+          title: err.data.data.message,
         });
       });
   }
@@ -60,7 +57,6 @@ export const SigninForm = () => {
   return (
     <>
       <div>
-
         <div>
           <Form {...form}>
             <form
@@ -69,9 +65,9 @@ export const SigninForm = () => {
             >
               <div className="flex flex-col gap-6 space-y-2">
                 <div className=" flex flex-col items-center text-center ">
-                  <h1 className="text-2xl font-bold">Welcome back</h1>
+                  <h1 className="text-2xl font-bold">Bienvenue</h1>
                   <p className="text-balance text-muted-foreground">
-                    Login to your Acme Inc account
+                    Connectez-vous à votre compte Acme Inc
                   </p>
                 </div>
 
@@ -84,7 +80,7 @@ export const SigninForm = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>Adresse Email</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="m@example.com" />
                           </FormControl>
@@ -112,8 +108,7 @@ export const SigninForm = () => {
                   </div>
 
                   <div className="flex items-center">
-                    <Button type="submit"
-                            className="w-full">
+                    <Button type="submit" className="w-full">
                       <span>Se connecter</span>
 
                       {isLoading && (

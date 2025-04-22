@@ -1,5 +1,6 @@
 import { SectionCards } from '@/components/section-cards.tsx';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive.tsx';
+import { CarouselOrientation } from './carousel-joueur';
 
 export default function DashboardIndex() {
   return (
@@ -13,7 +14,9 @@ export default function DashboardIndex() {
                 <ChartAreaInteractive />
               </div>
               {/*  liste des joueurs en vente*/}
-              <div className="md:col-span-1">Liste des joueurs</div>
+              <div className="md:col-span-1">
+                <CarouselOrientation />
+              </div>
             </div>
           </div>
         </div>

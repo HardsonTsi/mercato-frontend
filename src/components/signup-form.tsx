@@ -18,13 +18,10 @@ import { useSignUpMutation } from '@/app/redux/api/authApi.ts';
 import { useToast } from '@/components/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { useNavigateSearch } from '@/app/hooks/useNavigationSearch.tsx';
-import { Link } from 'react-router-dom';
-import { useNavigateSearch } from '@/app/hooks/useNavigationSearch';
 
 export function SignupForm() {
   const [signUp, { isLoading }] = useSignUpMutation();
   const { toast } = useToast();
-  const navigateSearch = useNavigateSearch();
   const navigateSearch = useNavigateSearch();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -49,7 +46,6 @@ export function SignupForm() {
           description: 'Compte créé avec succès',
         });
         localStorage.setItem('email', data.email);
-        navigateSearch('/auth/active-account', { email: data.email });
         navigateSearch('/auth/active-account', { email: data.email });
       })
       .catch((error) => {

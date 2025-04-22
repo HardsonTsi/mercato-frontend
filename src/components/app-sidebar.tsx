@@ -34,14 +34,14 @@ const data = {
   },
   navMain: [
     {
-      title: 'Playground',
-      url: '#',
+      title: 'Tableau de bord',
+      url: '/dashboard',
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: 'History',
-          url: '#',
+          title: 'Mon club',
+          url: '/dashboard/club',
         },
         {
           title: 'Starred',
@@ -162,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
+                  <span className="truncate font-semibold">Mercato</span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>
               </a>

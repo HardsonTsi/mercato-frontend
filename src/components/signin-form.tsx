@@ -32,7 +32,7 @@ export const SigninForm = () => {
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
-      password: '',
+      password: '12345678',
     },
   });
 

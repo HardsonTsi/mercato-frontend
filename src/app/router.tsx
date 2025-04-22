@@ -3,11 +3,13 @@ import SignupPage from '@/app/auth/Signup.tsx';
 import AuthLayout from '@/app/auth/AuthLayout.tsx';
 import { SigninPage } from '@/app/auth/Signin.tsx';
 
-import DasboardPage from '@/app/dashboard/page.tsx';
+import DasboardLayout from '@/app/dashboard/page.tsx';
 import { OpenRoute } from './auth/OpenRoute';
 import { PrivateRoute } from '@/app/auth/PrivateRoute.tsx';
 import { ActiveAccountPage } from './auth/ActiveAccount';
 import Home from './pages/Home';
+import DashboardIndex from '@/app/dashboard/index/dashboard-index.tsx';
+import DashboardClub from '@/app/dashboard/dashboard-club/dashboard-club.tsx';
 
 const router = createBrowserRouter([
   {
@@ -22,10 +24,19 @@ const router = createBrowserRouter([
     path: '/dashboard',
     element: (
       <PrivateRoute>
-        <DasboardPage />
+        <DasboardLayout />
       </PrivateRoute>
     ),
-    children: [],
+    children: [
+      {
+        index: true,
+        element: <DashboardIndex />,
+      },
+      {
+        path: '/dashboard/club',
+        element: <DashboardClub />,
+      },
+    ],
   },
   {
     path: '/auth',

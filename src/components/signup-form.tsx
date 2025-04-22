@@ -16,12 +16,13 @@ import { Button } from './ui/button';
 import { useSignUpMutation } from '@/app/redux/api/authApi.ts';
 
 import { useToast } from '@/components/hooks/use-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useNavigateSearch } from '@/app/hooks/useNavigationSearch';
 
 export function SignupForm() {
   const [signUp, { isLoading }] = useSignUpMutation();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const navigateSearch = useNavigateSearch();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -44,8 +45,7 @@ export function SignupForm() {
           title: 'Compte créé avec succès',
           description: 'Compte créé avec succès',
         });
-        localStorage.setItem('email', data.email);
-        navigate('/auth/active-account', { state: { email: data.email } });
+        navigateSearch('/auth/active-account', { email: data.email });
       })
       .catch((error) => {
         console.log(error);

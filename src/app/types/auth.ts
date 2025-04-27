@@ -1,5 +1,6 @@
 import * as z from 'zod';
 import { activeAccountSchema } from '@/app/zod-schemas/auth.ts';
+import { Club } from '@/app/types/club.ts';
 
 export type SignUpType = {
   email: string;
@@ -18,11 +19,12 @@ export type UserType = {
   lastname: string;
   createdAt: string;
   updatedAt: string;
+  club: Club;
 };
 
 export type AuthType = {
   user: UserType;
-  access_token: string;
+  token: string;
   refresh_token: string;
 };
 

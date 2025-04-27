@@ -39,7 +39,7 @@ export default function DasboardLayout() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="py-4 md:gap-6 md:py-6 px-4">
+        <div className="py-4 md:gap-6 md:py-6 px-8">
           <Outlet />
         </div>
       </SidebarInset>

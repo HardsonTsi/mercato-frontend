@@ -6,15 +6,14 @@ import { UserType } from '@/app/types/auth.ts';
 export type AuthState = {
   user: UserType;
   authenticated?: boolean;
-  access_token?: string;
+  token?: string;
   refresh_token?: string;
 };
 
 const initialState: AuthState = {
   user: undefined as unknown as UserType,
   authenticated: false,
-  access_token: '',
-  refresh_token: '',
+  token: '',
 };
 
 export const authSlice = createSlice({
@@ -23,20 +22,22 @@ export const authSlice = createSlice({
   reducers: {
     setAuth(state: AuthState, action: PayloadAction<any>) {
       state.user = action.payload['user'];
-      state.access_token = action.payload['access_token'];
-      state.refresh_token = action.payload['refresh_token'];
+      state.token = action.payload['token'];
       state.authenticated = true;
     },
     removeAuth(state: AuthState) {
       state.user = undefined as unknown as UserType;
       state.authenticated = false;
-      state.access_token = undefined;
-      state.refresh_token = undefined;
+      state.token = undefined;
+    },
+    refreshUser(state: AuthState, action: PayloadAction<any>) {
+      console.log('paylaod', action.payload);
+      state.user = action.payload;
     },
   },
 });
 
-export const { setAuth, removeAuth } = authSlice.actions;
+export const { setAuth, removeAuth, refreshUser } = authSlice.actions;
 
 export const useAuth = () => useSelector((state: RootState) => state.auth);
 

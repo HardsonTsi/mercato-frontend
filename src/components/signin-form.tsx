@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/form.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { LoaderCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useSignInMutation } from '@/app/redux/api/authApi.ts';
 import { useToast } from '@/components/hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ export const SigninForm = () => {
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
+      email: 'hardsontessi2@gmail.com',
       password: '12345678',
     },
   });
@@ -47,6 +47,7 @@ export const SigninForm = () => {
           variant: 'destructive',
           title,
         });
+        console.log(data.data);
         dispatch(setAuth(data.data));
         navigate('/dashboard');
       })
@@ -118,12 +119,7 @@ export const SigninForm = () => {
                   <div className="flex items-center">
                     <Button type="submit" className="w-full">
                       <span>Se connecter</span>
-
-                      {isLoading && (
-                        <span className="animate-spin">
-                          <LoaderCircle />
-                        </span>
-                      )}
+                      {isLoading && <Loader2 className="animate-spin" />}
                     </Button>
                   </div>
                   <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">

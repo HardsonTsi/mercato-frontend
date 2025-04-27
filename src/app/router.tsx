@@ -3,7 +3,7 @@ import SignupPage from '@/app/auth/Signup.tsx';
 import AuthLayout from '@/app/auth/AuthLayout.tsx';
 import { SigninPage } from '@/app/auth/Signin.tsx';
 
-import DasboardLayout from '@/app/dashboard/page.tsx';
+import DasboardLayout from '@/app/dashboard/DasboardLayout.tsx';
 import { OpenRoute } from './auth/OpenRoute';
 import { PrivateRoute } from '@/app/auth/PrivateRoute.tsx';
 import { ActiveAccountPage } from './auth/ActiveAccount';

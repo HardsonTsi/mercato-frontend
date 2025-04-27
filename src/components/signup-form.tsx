@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from './ui/form';
 import { Input } from './ui/input';
-import { LoaderCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSignUpMutation } from '@/app/redux/api/authApi.ts';
 
@@ -148,12 +148,7 @@ export function SignupForm() {
                 className="w-full"
               >
                 <span>Créer un compte</span>
-
-                {isLoading && (
-                  <span className="animate-spin">
-                    <LoaderCircle />
-                  </span>
-                )}
+                {isLoading && <Loader2 className="animate-spin" />}
               </Button>
             </div>
 

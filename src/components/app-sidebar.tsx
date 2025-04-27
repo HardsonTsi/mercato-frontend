@@ -10,6 +10,7 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  Shield,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -42,6 +43,7 @@ const data = {
         {
           title: 'Mon club',
           url: '/dashboard/club',
+          icon: Shield,
         },
         {
           title: 'Starred',

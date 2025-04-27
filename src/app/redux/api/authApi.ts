@@ -2,14 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ActiveAccountType, AuthType, UserType } from '@/app/types/auth.ts';
 import { z } from 'zod';
 import { signInSchema, signUpSchema } from '@/app/zod-schemas/auth.ts';
-
-const { VITE_API_URL } = import.meta.env;
+import config from '@/config/config.ts';
+import { setAuthHeader } from '@/app/redux/api/config.ts';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${VITE_API_URL}/auth`,
+    baseUrl: `${config.apiUrl}/auth`,
+    prepareHeaders: (headers, { getState }) => setAuthHeader(headers, getState),
   }),
+  tagTypes: ['user'],
   endpoints: (builder) => ({
     signUp: builder.mutation<UserType, z.infer<typeof signUpSchema>>({
       query: (body) => ({
@@ -32,8 +34,9 @@ export const authApi = createApi({
         body,
       }),
     }),
-    getProfile: builder.query<UserType, void>({
-      query: () => '/me',
+    getProfile: builder.query<any, void>({
+      query: () => '/profile',
+      providesTags: [{ type: 'user' }],
     }),
     activateAccount: builder.mutation({
       query: (body: ActiveAccountType) => ({

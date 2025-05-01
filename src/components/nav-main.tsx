@@ -35,6 +35,9 @@ export function NavMain({
     }[];
   }[];
 }) {
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Général</SidebarGroupLabel>

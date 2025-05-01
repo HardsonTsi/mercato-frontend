@@ -1,5 +1,4 @@
 import { Loader2, Shield } from 'lucide-react';
-import { defaultClub } from '@/app/types/club.ts';
 import { PhotoIcon } from '@heroicons/react/20/solid';
 import { clubSchema } from '@/app/zod-schemas/club.ts';
 import { useForm } from 'react-hook-form';
@@ -23,9 +22,7 @@ import {
   useCreateClubMutation,
   useUpdateClubMutation,
 } from '@/app/redux/api/clubApi.ts';
-import { refreshUser, useAuth } from '@/app/redux/slices/auth.slice.ts';
-import { useGetProfileQuery } from '@/app/redux/api/authApi.ts';
-import { useAppDispatch } from '@/app/redux/store.ts';
+import { useAuth } from '@/app/redux/slices/auth.slice.ts';
 
 export default function DashboardClub() {
   const [file, setFile] = useState<File | null>(null);
@@ -33,8 +30,6 @@ export default function DashboardClub() {
   const [createClub, { isLoading }] = useCreateClubMutation();
   const [updateClub, { isLoading: updateClubLoading }] =
     useUpdateClubMutation();
-  const { data: userUpdated } = useGetProfileQuery();
-  const dispacth = useAppDispatch();
 
   const { user } = useAuth();
 
@@ -55,8 +50,6 @@ export default function DashboardClub() {
         const { name, budget, country, expenses } = user.club;
 
         await onSubmit({ name, budget, country, expenses, logo: _.url });
-
-        dispacth(refreshUser(userUpdated!.data.user));
 
         setFile(null);
       })
@@ -79,7 +72,7 @@ export default function DashboardClub() {
         console.log(_);
         toast({
           variant: 'default',
-          title: 'Club créé avec succès',
+          title: 'Club enregistré avec succès',
         });
       })
       .catch((e) => {
@@ -89,39 +82,21 @@ export default function DashboardClub() {
           title: `Echec de l'enregistrement du club`,
         });
       });
-
-    // console.log(data);
-    // await createClub(data)
-    //   .unwrap()
-    //   .then(_ => {
-    //     console.log(_);
-    //     toast({
-    //       variant: 'default',
-    //       title: 'Club créé avec succès',
-    //     });
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //     toast({
-    //       variant: 'destructive',
-    //       title: `Echec de l'enregistrement du club`,
-    //     });
-    //   });
   };
 
   return (
     <>
       {/*mon club*/}
       <div className="flex flex-col gap-6 justify-center items-center">
-        {defaultClub ? (
+        {user.club ? (
           <>
             <img
-              src={defaultClub.logo}
-              alt={defaultClub.name}
+              src={user.club.logo}
+              alt={user.club.name}
               width={100}
               height={100}
             />
-            <p className="font-extrabold text-3xl">{defaultClub.name}</p>
+            <p className="font-extrabold text-3xl">{user.club.name}</p>
           </>
         ) : (
           <>
@@ -139,11 +114,10 @@ export default function DashboardClub() {
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base/7 font-semibold text-gray-900">
-                Profile
+                Mon club
               </h2>
               <p className="mt-1 text-sm/6 text-gray-600">
-                This information will be displayed publicly so be careful what
-                you share.
+                Ces informations seront affichées publiquement.
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -188,10 +162,11 @@ export default function DashboardClub() {
 
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base/7 font-semibold text-gray-900">
-                Personal Information
+                Information du club
               </h2>
               <p className="mt-1 text-sm/6 text-gray-600">
-                Use a permanent address where you can receive mail.
+                Utilisez une adresse permanente où vous pouvez recevoir du
+                courrier.
               </p>
 
               <div className="mt-10 grid gap-8 ">

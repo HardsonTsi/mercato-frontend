@@ -11,6 +11,8 @@ import {
   Settings2,
   SquareTerminal,
   Shield,
+  Footprints,
+  ChartNoAxesCombined,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -42,16 +44,18 @@ const data = {
       items: [
         {
           title: 'Mon club',
-          url: '/dashboard/club',
+          url: 'club',
           icon: Shield,
         },
         {
-          title: 'Starred',
-          url: '#',
+          title: 'Mes joueurs',
+          url: 'players',
+          icon: Footprints,
         },
         {
-          title: 'Settings',
-          url: '#',
+          title: 'Marché',
+          url: 'market',
+          icon: ChartNoAxesCombined,
         },
       ],
     },

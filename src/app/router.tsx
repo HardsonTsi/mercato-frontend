@@ -9,7 +9,8 @@ import { PrivateRoute } from '@/app/auth/PrivateRoute.tsx';
 import { ActiveAccountPage } from './auth/ActiveAccount';
 import Home from './pages/Home';
 import DashboardIndex from '@/app/dashboard/index/dashboard-index.tsx';
-import DashboardClub from '@/app/dashboard/dashboard-club/dashboard-club.tsx';
+import DashboardClub from '@/app/dashboard/club/dashboard-club.tsx';
+import { PlayersDisplay } from '@/app/dashboard/players/PlayersDisplay.tsx';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: '/dashboard/club',
         element: <DashboardClub />,
+      },
+      {
+        path: '/dashboard/players',
+        element: <PlayersDisplay />,
+      },
+      {
+        path: '/dashboard/Marché',
+        element: <PlayersDisplay />,
       },
     ],
   },

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/app/redux/store.ts';
 import { useSelector } from 'react-redux';
 import { UserType } from '@/app/types/auth.ts';
+import { Club } from '@/app/types/club.ts';
 
 export type AuthState = {
   user: UserType;
@@ -30,14 +31,17 @@ export const authSlice = createSlice({
       state.authenticated = false;
       state.token = undefined;
     },
+    setClub(state: AuthState, action: PayloadAction<Club>) {
+      state.user.club = action.payload;
+    },
     refreshUser(state: AuthState, action: PayloadAction<any>) {
-      console.log('paylaod', action.payload);
+      // console.log('paylaod', action.payload);
       state.user = action.payload;
     },
   },
 });
 
-export const { setAuth, removeAuth, refreshUser } = authSlice.actions;
+export const { setAuth, removeAuth, refreshUser, setClub } = authSlice.actions;
 
 export const useAuth = () => useSelector((state: RootState) => state.auth);
 

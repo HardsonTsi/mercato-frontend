@@ -8,15 +8,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useAuth } from '@/app/redux/slices/auth.slice';
+import { formatCurrency } from '@/lib/utils';
 
 export function SectionCards() {
+  const { user } = useAuth();
   return (
     <div className=" *:data-[slot=card]:shadow-xs grid auto-rows-min grid-cols-1   md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       <Card className="@container/card">
         <CardHeader className="relative">
           <CardDescription>Budget</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            $1,250.00
+            {formatCurrency(user.club.budget)}
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">

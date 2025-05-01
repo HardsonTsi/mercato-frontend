@@ -25,8 +25,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { removeAuth, useAuth } from '@/app/redux/slices/auth.slice.ts';
-import { useAppDispatch } from '@/app/redux/store.ts';
+import { removeAuth, useAuth } from '@/app/redux/slices/auth.slice';
+import { useAppDispatch } from '@/app/redux/store';
 
 export function NavUser() {
   const { isMobile } = useSidebar();

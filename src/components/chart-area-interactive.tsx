@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 import { useIsMobile } from '@/components/hooks/use-mobile';
@@ -25,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const chartData = [
   { date: '2024-04-01', desktop: 222, mobile: 150 },
@@ -139,7 +138,7 @@ export function ChartAreaInteractive() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = useState('30d');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isMobile) {
       setTimeRange('7d');
     }

@@ -37,7 +37,7 @@ export const SigninForm = () => {
   });
 
   async function onSubmit(data: z.infer<typeof signInSchema>) {
-    console.log(data);
+    // console.log(data);
     let title = '';
     await signIn(data)
       .unwrap()
@@ -45,9 +45,10 @@ export const SigninForm = () => {
         title = `Bienvenue ${data.data.user.firstname} ${data.data.user.lastname}`;
         toast({
           variant: 'destructive',
+          type: 'background',
           title,
         });
-        console.log(data.data);
+        // console.log(data.data);
         dispatch(setAuth(data.data));
         navigate('/dashboard');
       })
@@ -58,6 +59,7 @@ export const SigninForm = () => {
         }
         toast({
           variant: 'destructive',
+          type: 'background',
           title: title || err.data.data.message,
         });
       });

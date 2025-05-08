@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(
-  amount: number | 0,
+  amount: number | undefined,
   locale: string = 'en-US',
   currency: string = 'USD',
 ): string {

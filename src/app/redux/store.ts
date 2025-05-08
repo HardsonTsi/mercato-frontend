@@ -8,6 +8,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { fileApi } from '@/app/redux/api/fileApi.ts';
 import { clubApi } from '@/app/redux/api/clubApi.ts';
+import { playerApi } from '@/app/redux/api/playerApi.ts';
 
 const persistAuthStoreConfig = (key: string) => ({
   key,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [fileApi.reducerPath]: fileApi.reducer,
   [clubApi.reducerPath]: clubApi.reducer,
+  [playerApi.reducerPath]: playerApi.reducer,
 });
 
 export const store = configureStore({
@@ -34,6 +36,7 @@ export const store = configureStore({
       authApi.middleware,
       fileApi.middleware,
       clubApi.middleware,
+      playerApi.middleware
     ),
   devTools: true,
 });

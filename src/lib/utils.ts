@@ -6,12 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(
-  amount: number,
+  amount: number | 0,
   locale: string = 'en-US',
   currency: string = 'USD',
 ): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-  }).format(amount);
+  }).format(amount || 0);
 }

@@ -19,7 +19,7 @@ export type UserType = {
   lastname: string;
   createdAt: string;
   updatedAt: string;
-  club: Club;
+  club?: Club;
 };
 
 export type AuthType = {

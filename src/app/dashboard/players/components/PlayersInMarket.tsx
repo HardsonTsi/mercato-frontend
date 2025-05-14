@@ -1,12 +1,13 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel.tsx';
-import { FootballPositionType, PlayerType } from '@/app/types/player.ts';
+import { PlayerType } from '@/app/types/player.ts';
 import { formatCurrency, getCountryByCode } from '@/lib/utils.ts';
+import { Shield } from 'lucide-react';
 
 export function PlayersInMarket({ players }: { players: PlayerType[] }) {
   return (
     <>
       <div className=" m-1">
-        <Carousel >
+        <Carousel>
           <CarouselContent className="-ml-4 gap-4">
             {
               players.map(
@@ -15,13 +16,18 @@ export function PlayersInMarket({ players }: { players: PlayerType[] }) {
                     key={index}
                     className="p-4 basis-full md:basis-1/2 lg:basis-1/3 rounded-xl bg-muted"
                   >
-
                     <div className="flex items-center gap-6">
                       {/*img*/}
-                      <img
-                        src={player.avatar}
-                        className={'rounded-full w-28'}
-                        alt={`${player.lastname} ${player.firstname}`} />
+                      {
+                        player.avatar
+                          ?
+                          <img src={player.avatar}
+                               className={'rounded-full w-28'}
+                               alt={`${player.lastname} ${player.firstname}`} />
+                          :
+                          <Shield width={23} />
+                      }
+
                       {/*left*/}
                       <div className="flex justify-between  w-full">
                         <div className="space-y-3">
@@ -29,7 +35,7 @@ export function PlayersInMarket({ players }: { players: PlayerType[] }) {
                             {`${player.lastname} ${player.firstname}`}
                           </h3>
                           <p className="text-sm/6 font-semibold ">
-                            {FootballPositionType[player.position]}
+                            {player.position}
                           </p>
                         </div>
                         {/*  right*/}

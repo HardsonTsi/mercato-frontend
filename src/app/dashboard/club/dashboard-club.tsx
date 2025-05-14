@@ -55,7 +55,7 @@ export default function DashboardClub() {
         console.log(_);
         toast({
           type: 'background',
-          variant: 'destructive',
+          variant: 'default',
           title: 'Echec de l\'enregistrement du logo',
         });
       });
@@ -77,7 +77,7 @@ export default function DashboardClub() {
       .catch((e) => {
         console.log(e);
         toast({
-          variant: 'destructive',
+          variant: 'default',
           title: `Echec de l'enregistrement du club`,
         });
       });

@@ -2,14 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { signInSchema } from '@/app/zod-schemas/auth.ts';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form.tsx';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Loader2 } from 'lucide-react';
@@ -44,7 +37,7 @@ export const SigninForm = () => {
       .then((data) => {
         title = `Bienvenue ${data.data.user.firstname} ${data.data.user.lastname}`;
         toast({
-          variant: 'destructive',
+          variant: 'default',
           type: 'background',
           title,
         });
@@ -58,7 +51,7 @@ export const SigninForm = () => {
           title = 'Veuillez activer votre compte';
         }
         toast({
-          variant: 'destructive',
+          variant: 'default',
           type: 'background',
           title: title || err.data.data.message,
         });
@@ -119,14 +112,15 @@ export const SigninForm = () => {
                   </div>
 
                   <div className="flex items-center">
-                    <Button type="submit" className="w-full">
+                    <Button type="submit"
+                            className="w-full">
                       <span>Se connecter</span>
                       {isLoading && <Loader2 className="animate-spin" />}
                     </Button>
                   </div>
                   <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                     <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                      Or continue with
+                      Continuer avec
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-4"></div>

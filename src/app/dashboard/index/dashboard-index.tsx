@@ -1,8 +1,10 @@
 import { SectionCards } from '@/components/section-cards.tsx';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive.tsx';
 import { PlayersCarousel } from './PlayersCarousel.tsx';
+import { useGetProfileQuery } from '@/app/redux/api/authApi.ts';
 
 export default function DashboardIndex() {
+  const {} = useGetProfileQuery()
   return (
     <>
       <div className="flex flex-1 flex-col">

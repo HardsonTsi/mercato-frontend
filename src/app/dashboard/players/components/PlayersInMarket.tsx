@@ -1,44 +1,51 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel.tsx';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel.tsx';
+import { FootballPositionType, PlayerType } from '@/app/types/player.ts';
+import { formatCurrency, getCountryByCode } from '@/lib/utils.ts';
 
-export function PlayersInMarket() {
+export function PlayersInMarket({ players }: { players: PlayerType[] }) {
   return (
     <>
-      <div className="p-4">
-        <Carousel>
-          <CarouselContent className="gap-4">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-4 basis-full md:basis-1/2 lg:basis-1/3 aspect-video rounded-xl bg-muted"
-              >
-                <li>
-                  <div className="flex items-center gap-x-6">
-                    <Avatar>
-                      <AvatarImage
-                        className="size-16 rounded-full"
-                        src="https://github.com/shadcn.png"
-                      />
-                    </Avatar>
+      <div className=" m-1">
+        <Carousel >
+          <CarouselContent className="-ml-4 gap-4">
+            {
+              players.map(
+                (player: PlayerType, index: number) => (
+                  <CarouselItem
+                    key={index}
+                    className="p-4 basis-full md:basis-1/2 lg:basis-1/3 rounded-xl bg-muted"
+                  >
 
-                    <div>
-                      <h3 className="text-base/7 font-semibold tracking-tight text-gray-900">
-                        Lionel Messi
-                      </h3>
-                      <p className="text-sm/6 font-semibold text-indigo-600">
-                        Attaquant
-                      </p>
+                    <div className="flex items-center gap-6">
+                      {/*img*/}
+                      <img
+                        src={player.avatar}
+                        className={'rounded-full w-28'}
+                        alt={`${player.lastname} ${player.firstname}`} />
+                      {/*left*/}
+                      <div className="flex justify-between  w-full">
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-bold tracking-tight text-indigo-600">
+                            {`${player.lastname} ${player.firstname}`}
+                          </h3>
+                          <p className="text-sm/6 font-semibold ">
+                            {FootballPositionType[player.position]}
+                          </p>
+                        </div>
+                        {/*  right*/}
+                        <div className="text-center space-3-2">
+                          {getCountryByCode(player.country)?.flag}
+                          <p className=" text-lg font-semibold text-indigo-600">
+                            {formatCurrency(player.price)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              </CarouselItem>
-            ))}
+
+                  </CarouselItem>
+                ),
+              )
+            }
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

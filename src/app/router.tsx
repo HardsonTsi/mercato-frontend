@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import DashboardIndex from '@/app/dashboard/index/dashboard-index.tsx';
 import DashboardClub from '@/app/dashboard/club/dashboard-club.tsx';
 import { PlayersDisplay } from '@/app/dashboard/players/PlayersDisplay.tsx';
+import { Marketplace } from '@/app/dashboard/market/Marketplace.tsx';
 
 const router = createBrowserRouter([
   {
@@ -42,8 +43,8 @@ const router = createBrowserRouter([
         element: <PlayersDisplay />,
       },
       {
-        path: '/dashboard/Marché',
-        element: <PlayersDisplay />,
+        path: '/dashboard/market',
+        element: <Marketplace />,
       },
     ],
   },

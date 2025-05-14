@@ -164,9 +164,9 @@ export function ChartAreaInteractive() {
         <CardTitle>Total des opérations</CardTitle>
         <CardDescription>
           <span className="@[540px]/card:block hidden">
-            Total for the {timeRange}
+            Total pour les  {timeRange}
           </span>
-          <span className="@[540px]/card:hidden">Last {timeRange}</span>
+          <span className="@[540px]/card:hidden">Ces {timeRange}</span>
         </CardDescription>
         <div className="absolute right-4 top-4">
           <ToggleGroup
@@ -177,13 +177,13 @@ export function ChartAreaInteractive() {
             className="@[767px]/card:flex hidden"
           >
             <ToggleGroupItem value="90d" className="h-8 px-2.5">
-              Last 3 months
+               3 derniers mois
             </ToggleGroupItem>
             <ToggleGroupItem value="30d" className="h-8 px-2.5">
-              Last 30 days
+               30 derniers jours
             </ToggleGroupItem>
             <ToggleGroupItem value="7d" className="h-8 px-2.5">
-              Last 7 days
+              7 derniers jours
             </ToggleGroupItem>
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
@@ -195,13 +195,13 @@ export function ChartAreaInteractive() {
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               <SelectItem value="90d" className="rounded-lg">
-                Last 3 months
+                3 derniers mois
               </SelectItem>
               <SelectItem value="30d" className="rounded-lg">
-                Last 30 days
+                30 derniers jours
               </SelectItem>
               <SelectItem value="7d" className="rounded-lg">
-                Last 7 days
+                7 derniers jours
               </SelectItem>
             </SelectContent>
           </Select>

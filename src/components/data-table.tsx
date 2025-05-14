@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -36,9 +37,10 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  CircleX,
   ColumnsIcon,
-  MoreVerticalIcon,
   PlusIcon,
+  Shield,
   Tag,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -48,28 +50,19 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarImage } from '@/components/ui/avatar.tsx';
 import { PlayerType } from '@/app/types/player.ts';
 
 import { PlayerForm } from '@/app/dashboard/players/components/PlayerForm.tsx';
+import { useDeletePlayerMutation } from '@/app/redux/api/playerApi.ts';
+import { useToast } from '@/components/hooks/use-toast.ts';
 
 const columns: ColumnDef<PlayerType>[] = [
   {
@@ -79,14 +72,14 @@ const columns: ColumnDef<PlayerType>[] = [
 
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+    cell: ({ row }) =>
+      row.original.avatar ? (
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={row.original.avatar}/>
         </Avatar>
-
-      </div>
-    ),
+      ) : (
+        <Shield width={100} />
+      ),
     enableSorting: false,
     enableHiding: false,
   },
@@ -102,7 +95,7 @@ const columns: ColumnDef<PlayerType>[] = [
     id: 'country',
     header: 'Pays',
     cell: ({ row }) => {
-           return (
+      return (
         <p> {Country.getCountryByCode(row.original.country)?.flag}</p>
 
       );
@@ -142,35 +135,47 @@ const columns: ColumnDef<PlayerType>[] = [
             Pas à vendre
           </>
         )}
-        {/*{row.original.status}*/}
       </Badge>
     ),
   },
   {
     id: 'actions',
     header: 'Actions',
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-            size="icon"
-          >
-            <MoreVerticalIcon />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end"
-                             className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+
+      const [deletePlayer, {}] = useDeletePlayerMutation();
+      const { toast } = useToast();
+
+      const onDelete = async () => {
+        await deletePlayer({ id: row.id })
+          .unwrap()
+          .then(() => {
+            toast({
+              variant: 'default',
+              type: 'foreground',
+              title: 'Joueur supprimé',
+            });
+          })
+          .catch(e => {
+            toast({
+              variant: 'default',
+              type: 'foreground',
+              title: 'Joueur non supprimé, ' + e.data.message,
+            });
+          });
+      };
+
+      return <>
+        <Badge
+          onClick={onDelete}
+          variant="outline"
+          className="cursor-pointer w-fit flex gap-1 px-1.5 py-1.5 text-muted-foreground [&_svg]:size-3"
+        >
+          <CircleX className="text-red-500 dark:text-red-400" />
+
+        </Badge>
+      </>;
+    },
   },
 
 ];
@@ -265,6 +270,7 @@ export function DataTable({
     }
   }
 
+  const [open, setOpen] = useState(false);
 
   return (
     <Tabs
@@ -337,11 +343,34 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline"
-                  size="sm">
-            <PlusIcon />
-            <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          <div>
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              size="sm"
+            >
+              Ajouter un joueur
+              <PlusIcon />
+            </Button>
+
+            <Sheet open={open}
+                   onOpenChange={setOpen}>
+              <SheetContent
+                side="right"
+                className="sm:max-w-full flex flex-col">
+                <SheetHeader className="gap-1">
+                  <SheetTitle>Nouveau joueur</SheetTitle>
+                  <SheetDescription>
+                    Showing total visitors for the last 6 months
+                  </SheetDescription>
+                </SheetHeader>
+                <PlayerForm player={undefined}
+                            setOpen={setOpen} />
+
+              </SheetContent>
+            </Sheet>
+          </div>
+
         </div>
       </div>
       <TabsContent
@@ -383,8 +412,8 @@ export function DataTable({
                     strategy={verticalListSortingStrategy}
                   >
                     {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id}
-                                    row={row} />
+                      <DraggableRow row={row}
+                                    key={`Player-${row.id}`} />
                     ))}
                   </SortableContext>
                 ) : (
@@ -393,7 +422,7 @@ export function DataTable({
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results.
+                      Aucun joueur.
                     </TableCell>
                   </TableRow>
                 )}
@@ -505,10 +534,14 @@ export function DataTable({
 
 function TableCellViewer({ item }: { item: PlayerType }) {
 
+  const [open, setOpen] = useState(false);
+
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Sheet open={open}
+           onOpenChange={setOpen}>
+      <SheetTrigger asChild
+                    onClick={() => setOpen(true)}>
         <Button variant="link"
                 className="w-fit px-0 text-left text-foreground">
           {`${item.lastname} ${item.firstname}`}
@@ -523,7 +556,8 @@ function TableCellViewer({ item }: { item: PlayerType }) {
             Showing total visitors for the last 6 months
           </SheetDescription>
         </SheetHeader>
-        <PlayerForm player={item} />
+        <PlayerForm player={item}
+                    setOpen={setOpen} />
 
       </SheetContent>
     </Sheet>

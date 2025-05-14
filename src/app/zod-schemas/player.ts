@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { FootballPositionType } from '@/app/types/player.ts';
 
 
 export const playerSchema = z.object({
@@ -11,9 +10,6 @@ export const playerSchema = z.object({
   price: z.number().nonnegative('Le prix ne peut pas être négatif.'),
   available: z.boolean(),
   country: z.string().length(2, 'Le pays ne peut pas être vide.'),
-  avatar: z.string().url('L\'avatar doit être une URL valide.'),
   birthday: z.coerce.date(),
-  position: z.nativeEnum(FootballPositionType, {
-    invalid_type_error: 'Le poste sélectionné est invalide.',
-  }),
+  position: z.string(),
 });

@@ -2,14 +2,7 @@ import { Loader2, Shield } from 'lucide-react';
 import { PhotoIcon } from '@heroicons/react/20/solid';
 import { clubSchema } from '@/app/zod-schemas/club.ts';
 import { useForm } from 'react-hook-form';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form.tsx';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input.tsx';
@@ -18,18 +11,18 @@ import { Button } from '@/components/ui/button.tsx';
 import { ChangeEvent, useState } from 'react';
 import { useUploadMutation } from '@/app/redux/api/fileApi.ts';
 import { useToast } from '@/components/hooks/use-toast.ts';
-import {
-  useCreateClubMutation,
-  useUpdateClubMutation,
-} from '@/app/redux/api/clubApi.ts';
+import { useCreateClubMutation, useUpdateClubMutation } from '@/app/redux/api/clubApi.ts';
 import { useAuth } from '@/app/redux/slices/auth.slice.ts';
+import { Country } from 'country-state-city';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 
 export default function DashboardClub() {
   const [file, setFile] = useState<File | null>(null);
   const [uploadFile] = useUploadMutation();
   const [createClub, { isLoading }] = useCreateClubMutation();
-  const [updateClub, { isLoading: updateClubLoading }] =
-    useUpdateClubMutation();
+  const [updateClub, { isLoading: updateClubLoading }] = useUpdateClubMutation();
+  const countries = Country.getAllCountries();
+
 
   const { user } = useAuth();
 
@@ -37,7 +30,12 @@ export default function DashboardClub() {
 
   const form = useForm<z.infer<typeof clubSchema>>({
     resolver: zodResolver(clubSchema),
-    defaultValues: user.club,
+    defaultValues: user.club || {
+      budget: 0,
+      country: 'FR',
+      logo: '',
+      name: '',
+    },
   });
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +45,9 @@ export default function DashboardClub() {
     await uploadFile(file)
       .unwrap()
       .then(async (_) => {
-        const { name, budget, country, expenses } = user.club;
+        const { name, budget, country } = user.club;
 
-        await onSubmit({ name, budget, country, expenses, logo: _.url });
+        await onSubmit({ name, budget, country, logo: _.url });
 
         setFile(null);
       })
@@ -58,13 +56,14 @@ export default function DashboardClub() {
         toast({
           type: 'background',
           variant: 'destructive',
-          title: "Echec de l'enregistrement du logo",
+          title: 'Echec de l\'enregistrement du logo',
         });
       });
   };
 
   const onSubmit = async (data: z.infer<typeof clubSchema>) => {
-    const cas = !user ? createClub(data) : updateClub(data);
+    console.log(data);
+    const cas = !user.club ? createClub(data) : updateClub(data);
 
     await cas
       .unwrap()
@@ -86,31 +85,48 @@ export default function DashboardClub() {
 
   return (
     <>
-      {/*mon club*/}
-      <div className="flex flex-col gap-6 justify-center items-center">
-        {user.club ? (
-          <>
-            <img
-              src={user.club.logo}
-              alt={user.club.name}
-              width={100}
-              height={100}
-            />
-            <p className="font-extrabold text-3xl">{user.club.name}</p>
-          </>
-        ) : (
-          <>
-            <Shield width={100} height={100} />
+
+      {/* Mon club */}
+
+      {user.club ? (
+        <>
+          <div className="flex flex-col items-center">
+
+
+            {user.club.logo ? (
+              <img
+                src={user.club.logo}
+                alt={user.club.name}
+                width={100}
+                height={100}
+              />
+            ) : (
+              <Shield width={100}
+                      height={100} />
+            )}
+            <p className="font-extrabold text-3xl">
+              {user.club.name}
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col items-center">
+            <Shield width={100}
+                    height={100}
+                    className={'mx-auto'} />
             <p className="font-extrabold text-3xl">Nom du club</p>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
+
 
       <Separator className="my-6" />
 
       {/*  formulaire*/}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className=" p-6 md:p-8">
+        <form onSubmit={form.handleSubmit(onSubmit)}
+              className=" p-6 md:p-8">
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base/7 font-semibold text-gray-900">
@@ -203,12 +219,55 @@ export default function DashboardClub() {
                     )}
                   />
                 </div>
+
+                {/*  country*/}
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => {
+                      const selectedCountry = Country.getCountryByCode(field.value);
+                      const country = `${selectedCountry?.name} ${selectedCountry?.flag}`;
+                      return (
+                        <FormItem>
+                          <FormLabel>Pays</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange}
+                                    defaultValue={field.value}>
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={country}
+                                >
+                                  {country}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {countries.map((country) => (
+                                    <SelectItem
+                                      value={country.isoCode}
+                                      key={`Country-${country.isoCode}`}
+                                    >
+                                      {country.name} {country.flag}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-x-6">
-            <Button variant="outline" type="reset">
+            <Button variant="outline"
+                    type="reset">
               Annuler
             </Button>
             <Button type="submit">

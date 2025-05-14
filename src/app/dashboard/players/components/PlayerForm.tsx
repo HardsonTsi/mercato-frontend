@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { playerSchema } from '@/app/zod-schemas/player.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { faker } from '@faker-js/faker';
 import { FootballPositionType, PlayerType } from '@/app/types/player.ts';
 import { Input } from '@/components/ui/input.tsx';
 import {
@@ -15,45 +14,93 @@ import {
 } from '@/components/ui/select.tsx';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
-import { Ban, Tag } from 'lucide-react';
+import { Ban, Shield, Tag } from 'lucide-react';
 import { Country } from 'country-state-city';
 import { Calendar } from '@/components/ui/calendar.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { SheetClose, SheetFooter } from '@/components/ui/sheet.tsx';
+import { useEffect } from 'react';
+import { useCreatePlayerMutation, useUpdatePlayerMutation } from '@/app/redux/api/playerApi.ts';
+import { useToast } from '@/components/hooks/use-toast.ts';
 
 
-export const PlayerForm = ({ player }: { player: PlayerType }) => {
+export const PlayerForm = ({
+                             player = {
+                               id: undefined,
+                               lastname: '',
+                               firstname: '',
+                               email: '',
+                               number: 0,
+                               price: 0,
+                               country: 'FR',
+                               birthday: undefined,
+                               position: FootballPositionType[0],
+                               avatar: '',
+                               available: false,
+                             }, setOpen,
+                           }: { player?: PlayerType, setOpen: Function }) => {
 
   const countries = Country.getAllCountries();
+  const [createPlayer, {}] = useCreatePlayerMutation();
+  const [updatePlayer, {}] = useUpdatePlayerMutation();
 
   const form = useForm<z.infer<typeof playerSchema>>({
     resolver: zodResolver(playerSchema),
-    defaultValues: {
-      lastname: player.lastname || faker.person.lastName(),
-      firstname: player.firstname || faker.person.firstName(),
-      email: player.email || faker.internet.email(),
-      number: player.number || faker.number.int({ min: 1, max: 99 }), // Utilisation de `??` pour vérifier si `number` est défini
-      price: player.price || faker.number.float({ min: 1000 }),
-      available: player.available || faker.datatype.boolean(),
-      country: player.country || faker.location.countryCode(),
-      avatar: player.avatar || faker.image.avatar(),
-      birthday: player.birthday || faker.date.past({ years: 1987 }),
-      position: player.position || faker.helpers.arrayElement(Object.keys(FootballPositionType)),
-    },
+    defaultValues: player,
   });
 
-  function onSubmit(data: any) {
+  const { errors } = form.formState;
+  const { toast } = useToast();
+  useEffect(() => {
+    console.log('Erreurs du formulaire :', errors);
+  }, [errors]);
+
+  async function onSubmit(data: any) {
     console.log(data);
+    const id = player.id;
+    const response = id ? updatePlayer({ id, data }) : createPlayer(data);
+
+    await response
+      .unwrap()
+      .then(() => {
+        setOpen(false);
+        toast({
+          variant: 'default',
+          type: 'foreground',
+          title: id ? 'Joueur mise à jour' : 'Joueur enregistré',
+        });
+      })
+      .catch(e => {
+        toast({
+          variant: 'destructive',
+          type: 'background',
+          title: e.data.message,
+        });
+      });
+
   }
 
   return <>
 
-    <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
+    <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm ">
 
-      <img src={player.avatar}
-           className=" mx-auto w-1/2 h-[400px]"
+      {
+        player.avatar
+          ?
+          <img
+            src={player.avatar}
+            className="mx-auto w-1/2 h-[400px] bg-red-500"
+            alt={`${player.lastname} ${player.firstname}`}
+          />
+          :
+          <Shield
 
-           alt={`${player.lastname} ${player.firstname}`} />
+            width={100}
+            height={100}
+          />
+
+      }
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -117,7 +164,15 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
                   <FormItem>
                     <FormLabel>Numéro</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber;
+                          field.onChange(Number.isNaN(value) ? undefined : value);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,14 +188,19 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
                   <FormItem>
                     <FormLabel>Disponible</FormLabel>
                     <FormControl>
-                      <ToggleGroup type="single">
-                        <ToggleGroupItem onChange={field.onChange}
-                                         value="true">
+                      <ToggleGroup type="single"
+                                   value={field.value.toString()}
+                                   onValueChange={(newValue) => {
+                                     field.onChange(newValue === 'true');
+                                   }}
+                      >
+                        <ToggleGroupItem
+                          value="true">
                           <Tag className="text-green-500 dark:text-green-400" />
                           En vente
                         </ToggleGroupItem>
-                        <ToggleGroupItem onChange={field.onChange}
-                                         value="false">
+                        <ToggleGroupItem
+                          value="false">
                           <Ban className="text-red-500 dark:text-red-400" />
                           Pas à vendre
                         </ToggleGroupItem>
@@ -160,7 +220,14 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
                   <FormItem>
                     <FormLabel>Prix</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field}
+                             type={'number'}
+                             value={field.value ?? ''}
+                             onChange={(e) => {
+                               const value = e.target.valueAsNumber;
+                               field.onChange(Number.isNaN(value) ? undefined : value);
+                             }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -172,33 +239,43 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
               <FormField
                 control={form.control}
                 name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pays</FormLabel>
-                    <FormControl>
-                      <Select>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder={`${Country.getCountryByCode(form.getValues('country'))?.name} ${Country.getCountryByCode(form.getValues('country'))?.flag}`}>
-                            {Country.getCountryByCode(form.getValues('country'))?.name} {Country.getCountryByCode(form.getValues('country'))?.flag}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {countries.map(country => <SelectItem
-                              value={country.isoCode}
-                              onChange={field.onChange}
+                render={({ field }) => {
+                  const selectedCountry = Country.getCountryByCode(field.value);
+                  const country = `${selectedCountry?.name} ${selectedCountry?.flag}`;
+                  return (
+                    <FormItem>
+                      <FormLabel>Pays</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange}
+                                defaultValue={field.value}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue
+                              placeholder={country}
                             >
-                              {country.name} {country.flag}
-                            </SelectItem>)}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                              {country}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {countries.map((country) => (
+                                <SelectItem
+                                  value={country.isoCode}
+                                  key={`Country-${country.isoCode}`}
+                                >
+                                  {country.name} {country.flag}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
+
             {/*birthday*/}
             <div className="flex flex-col gap-3">
               <FormField
@@ -213,6 +290,7 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
                         selected={field.value}
                         onSelect={field.onChange}
                         className="rounded-md border"
+                        disabled={(date) => date > new Date() || date < new Date('1987-01-01')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -222,10 +300,49 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
             </div>
           </div>
 
+          {/*position*/}
+          <div className="flex flex-col gap-3">
+            <FormField
+              control={form.control}
+              name="position"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Position</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choisissez un poste">
+                          {field.value}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FootballPositionType.map(position => (
+                          <SelectItem
+                            key={position}
+                            value={position}
+                          >
+                            {position}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-            <Button type={'submit'} className="w-full">Submit</Button>
+            <Button
+              type={'submit'}
+              className="w-full">Publier</Button>
             <SheetClose asChild>
               <Button
+                type="reset"
                 variant="outline"
                 className="w-full"
               >
@@ -237,8 +354,6 @@ export const PlayerForm = ({ player }: { player: PlayerType }) => {
         </form>
       </Form>
     </div>
-
-
   </>;
 
 };

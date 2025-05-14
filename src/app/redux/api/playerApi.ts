@@ -10,11 +10,56 @@ export const playerApi = createApi({
     baseUrl: `${config.apiUrl}/player`,
     prepareHeaders: (headers, { getState }) => setAuthHeader(headers, getState),
   }),
+  tagTypes: ['players'],
   endpoints: (builder) => ({
     getClubPlayers: builder.query<ApiResponse<PlayerType[]>, void>({
-      query: () => "/"
-    })
+      query: () => '/',
+      providesTags: ['players'],
+    }),
+    getMarketplace: builder.query<ApiResponse<PlayerType[]>, void>({
+      query: () => '/marketplace',
+      providesTags: ['players'],
+    }),
+    createPlayer: builder.mutation<ApiResponse<PlayerType>, PlayerType>({
+      query: (body) => ({
+        method: 'POST',
+        url: '/create',
+        body,
+      }),
+      invalidatesTags: ['players'],
+    }),
+    updatePlayer: builder.mutation<ApiResponse<PlayerType>, { id: string; data: PlayerType }>({
+      query: ({ id, data }) => ({
+        method: 'PUT',
+        url: `/update/${id}`,
+        body: data,
+      }),
+      invalidatesTags: ['players'],
+    }),
+    deletePlayer: builder.mutation<ApiResponse<any>, { id: string }>({
+      query: ({ id }) => ({
+        method: 'DELETE',
+        url: `/delete/${id}`,
+      }),
+      invalidatesTags: ['players'],
+    }),
+    buyPlayer: builder.mutation<ApiResponse<any>, { id: string }>({
+      query: ({ id }) => ({
+        method: 'POST',
+        url: 'buy',
+        body: {
+          playerId: id
+        },
+      }),
+      invalidatesTags: ['players'],
+    }),
   }),
 });
-
-export const {useGetClubPlayersQuery} = playerApi
+export const {
+  useGetClubPlayersQuery,
+  useCreatePlayerMutation,
+  useUpdatePlayerMutation,
+  useDeletePlayerMutation,
+  useGetMarketplaceQuery,
+  useBuyPlayerMutation,
+} = playerApi;

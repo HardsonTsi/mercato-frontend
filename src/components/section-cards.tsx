@@ -19,7 +19,7 @@ export function SectionCards() {
         <CardHeader className="relative">
           <CardDescription>Budget</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {formatCurrency(user.club.budget)}
+            {formatCurrency(user?.club?.budget)}
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">

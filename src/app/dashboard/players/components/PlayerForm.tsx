@@ -72,7 +72,7 @@ export const PlayerForm = ({
       })
       .catch(e => {
         toast({
-          variant: 'destructive',
+          variant: 'default',
           type: 'background',
           title: e.data.message,
         });

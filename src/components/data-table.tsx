@@ -285,27 +285,7 @@ export function DataTable({
 
         <TabsList className="@4xl/main:flex ">
           <TabsTrigger value="outline">Joueurs</TabsTrigger>
-          <TabsTrigger value="past-performance"
-                       className="gap-1">
-            Past Performance{' '}
-            <Badge
-              variant="secondary"
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground/30"
-            >
-              3
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger value="key-personnel"
-                       className="gap-1">
-            Key Personnel{' '}
-            <Badge
-              variant="secondary"
-              className="flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground/30"
-            >
-              2
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -313,8 +293,8 @@ export function DataTable({
               <Button variant="outline"
                       size="sm">
                 <ColumnsIcon />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
+                <span className="hidden lg:inline">Personnaliser les colonnes</span>
+                <span className="lg:hidden">Colonnes</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -361,7 +341,7 @@ export function DataTable({
                 <SheetHeader className="gap-1">
                   <SheetTitle>Nouveau joueur</SheetTitle>
                   <SheetDescription>
-                    Showing total visitors for the last 6 months
+                    Total des visiteurs
                   </SheetDescription>
                 </SheetHeader>
                 <PlayerForm player={undefined}

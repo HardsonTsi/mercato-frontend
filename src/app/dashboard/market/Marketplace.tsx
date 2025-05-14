@@ -25,7 +25,7 @@ export const Marketplace = () => {
                 playersList!.data?.map((player: PlayerType) =>
 
                   <>
-                   <PlayerBuyCard player={player} />
+                   <PlayerBuyCard player={player} key={player.id}/>
 
                   </>,
                 )

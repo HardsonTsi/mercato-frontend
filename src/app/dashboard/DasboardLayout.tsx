@@ -14,8 +14,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb.tsx';
+import { useMqtt } from '@/app/hooks/useMqtt.tsx';
 
 export default function DasboardLayout() {
+  useMqtt()
+
   return (
     <SidebarProvider>
       <AppSidebar />
